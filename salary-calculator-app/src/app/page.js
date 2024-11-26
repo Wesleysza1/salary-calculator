@@ -225,7 +225,7 @@ export default function Home() {
                       type="number"
                       value={totalSalary}
                       onChange={(e) => setTotalSalary(parseFloat(e.target.value))}
-                      placeholder="Salário total"
+                      placeholder="R$ 1412,00"
                     />
                   </div>
 
@@ -274,7 +274,7 @@ export default function Home() {
                       type="number"
                       value={monthlySalary}
                       onChange={(e) => setMonthlySalary(parseFloat(e.target.value))}
-                      placeholder="Salário mensal"
+                      placeholder="R$ 1412,00"
                     />
                   </div>
 
