@@ -147,7 +147,7 @@ export default function Home() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <Label>Total de Horas no Período</Label>
+                    <Label>Jornada Mensal (Horas)</Label>
                     <Input
                       type="number"
                       value={totalHours}
@@ -157,7 +157,7 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <Label>Salário Total</Label>
+                    <Label>Salário Mensal</Label>
                     <Input
                       type="number"
                       value={totalSalary}
