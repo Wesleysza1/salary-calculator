@@ -10,19 +10,19 @@ import { Plus, Trash2 } from 'lucide-react';
 export default function Home() {
   // Estado para Calculadora de Salário
   const [totalHours, setTotalHours] = useState(220);
-  const [totalSalary, setTotalSalary] = useState(2900);
+  const [totalSalary, setTotalSalary] = useState(1412);
   const [workedHoursInput, setWorkedHoursInput] = useState('');
-  const [workedHours, setWorkedHours] = useState(149.37);
+  const [workedHours, setWorkedHours] = useState(220);
 
   // Estado para Conversão de Horas
   const [hourInput, setHourInput] = useState('');
   const [decimalHours, setDecimalHours] = useState(null);
 
   // Estado para Cálculo de Horas Extras
-  const [monthlySalary, setMonthlySalary] = useState(2000);
+  const [monthlySalary, setMonthlySalary] = useState(1412);
   const [monthlyWorkload, setMonthlyWorkload] = useState(220);
-  const [extraHoursInput, setExtraHoursInput] = useState('');
-  const [extraHours, setExtraHours] = useState(10);
+  const [extraHoursInput, setExtraHoursInput] = useState(0);
+  const [extraHours, setExtraHours] = useState(0);
   const [extraHourPercentage, setExtraHourPercentage] = useState(50);
 
   // state for multiple days hours calculation
@@ -71,8 +71,23 @@ export default function Home() {
     const newId = dayEntries.length > 0
       ? Math.max(...dayEntries.map(entry => entry.id)) + 1
       : 1;
-    setDayEntries([...dayEntries, { id: newId, hours: '8:48' }]);
+
+    // Default hours for the new day
+    const defaultHours = '8:48';
+
+    // Add the new entry
+    const updatedEntries = [...dayEntries, { id: newId, hours: defaultHours }];
+    setDayEntries(updatedEntries);
+
+    // Update the total hours
+    const totalDecimalHours = updatedEntries.reduce((total, entry) => {
+      const decimalValue = convertToDecimal(entry.hours);
+      return total + (decimalValue !== null ? decimalValue : 0);
+    }, 0);
+
+    setTotalDaysHours(totalDecimalHours);
   };
+
 
   // Remove a day entry
   const removeDayEntry = (id) => {
@@ -199,15 +214,6 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div>
-                    <Label>Jornada Mensal (Horas)</Label>
-                    <Input
-                      type="number"
-                      value={totalHours}
-                      onChange={(e) => setTotalHours(parseFloat(e.target.value))}
-                      placeholder="Total de horas"
-                    />
-                  </div>
 
                   <div>
                     <Label>Salário Mensal</Label>
@@ -216,6 +222,16 @@ export default function Home() {
                       value={totalSalary}
                       onChange={(e) => setTotalSalary(parseFloat(e.target.value))}
                       placeholder="Salário total"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Jornada Mensal (Horas)</Label>
+                    <Input
+                      type="number"
+                      value={totalHours}
+                      onChange={(e) => setTotalHours(parseFloat(e.target.value))}
+                      placeholder="Total de horas"
                     />
                   </div>
 
