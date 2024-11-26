@@ -26,7 +26,7 @@ export default function Home() {
   const [extraHourPercentage, setExtraHourPercentage] = useState(50);
 
   // state for multiple days hours calculation
-  const [dayEntries, setDayEntries] = useState([{ id: 1, hours: '' }]);
+  const [dayEntries, setDayEntries] = useState([{ id: 1, hours: '8:48' }]);
   const [totalDaysHours, setTotalDaysHours] = useState(null);
 
   // Função para converter HHH:MM para decimal
@@ -71,7 +71,7 @@ export default function Home() {
     const newId = dayEntries.length > 0
       ? Math.max(...dayEntries.map(entry => entry.id)) + 1
       : 1;
-    setDayEntries([...dayEntries, { id: newId, hours: '' }]);
+    setDayEntries([...dayEntries, { id: newId, hours: '8:48' }]);
   };
 
   // Remove a day entry
@@ -145,6 +145,14 @@ export default function Home() {
     };
   };
 
+  // Função de validação para aceitar apenas números, ponto, vírgula e dois pontos
+  const validateNumericInput = (e) => {
+    const allowedChars = /[0-9.:,]/;
+    if (!allowedChars.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const extraHoursCalculation = calculateExtraHours();
 
   return (
@@ -169,6 +177,7 @@ export default function Home() {
                         setHourInput(e.target.value);
                         manualConvertToDecimal(e.target.value);
                       }}
+                      onKeyPress={validateNumericInput}
                       placeholder="Ex: 145:30 (até 999:59)"
                     />
                   </div>
@@ -216,6 +225,7 @@ export default function Home() {
                       type="text"
                       value={workedHoursInput}
                       onChange={(e) => handleWorkedHoursChange(e.target.value)}
+                      onKeyPress={validateNumericInput}
                       placeholder="Ex: 149:22 ou 149.37"
                     />
                   </div>
@@ -264,6 +274,7 @@ export default function Home() {
                       type="text"
                       value={extraHoursInput}
                       onChange={(e) => handleExtraHoursChange(e.target.value)}
+                      onKeyPress={validateNumericInput}
                       placeholder="Ex: 10:30 ou 10.5"
                     />
                   </div>
@@ -271,9 +282,13 @@ export default function Home() {
                   <div>
                     <Label>Porcentagem Hora Extra (%)</Label>
                     <Input
-                      type="number"
-                      value={extraHourPercentage}
-                      onChange={(e) => setExtraHourPercentage(parseFloat(e.target.value))}
+                      type="text"
+                      value={extraHourPercentage.toString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9.,]/g, '');
+                        setExtraHourPercentage(value === '' ? 0 : parseFloat(value.replace(',', '.')));
+                      }}
+                      onKeyPress={validateNumericInput}
                       placeholder="Porcentagem hora extra"
                     />
                   </div>
@@ -292,7 +307,7 @@ export default function Home() {
 
           {/* Coluna Esquerda - Cálculo de Horas por Dia */}
           <div>
-          <Card className="w-full">
+            <Card className="w-full">
               <CardHeader>
                 <CardTitle className="text-center">Calculadora de Horas por Dias</CardTitle>
               </CardHeader>
@@ -306,13 +321,14 @@ export default function Home() {
                           type="text"
                           value={entry.hours}
                           onChange={(e) => handleDayHoursChange(entry.id, e.target.value)}
+                          onKeyPress={validateNumericInput}
                           placeholder="Ex: 8:30 ou 8.5"
                         />
                       </div>
                       {dayEntries.length > 1 && (
-                        <Button 
-                          variant="destructive" 
-                          size="icon" 
+                        <Button
+                          variant="destructive"
+                          size="icon"
                           onClick={() => removeDayEntry(entry.id)}
                           className="mt-6"
                         >
