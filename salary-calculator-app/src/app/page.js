@@ -173,7 +173,9 @@ export default function Home() {
   return (
     <main className="flex flex-col min-h-screen p-4 bg-gray-100">
       <div className="max-w-6xl mx-auto w-full">
-        <h3 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight text-center">Calculadora de Horas</h3>
+        <h3 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight text-center">
+          Calculadora de Salário e Horas
+        </h3>
         <br></br>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Coluna Esquerda */}
