@@ -110,9 +110,9 @@ export default function Home() {
           {/* Coluna Esquerda */}
           <div className="space-y-6">
             {/* Conversor de Horas */}
-            {/* <Card className="w-full">
+            <Card className="w-full">
               <CardHeader>
-                <CardTitle className="text-center">Conversor de Horas</CardTitle>
+                <CardTitle className="text-center">Conversor de Horas para Decimal</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -137,7 +137,7 @@ export default function Home() {
                   )}
                 </div>
               </CardContent>
-            </Card> */}
+            </Card>
 
             {/* Calculadora de Salário */}
             <Card className="w-full">
