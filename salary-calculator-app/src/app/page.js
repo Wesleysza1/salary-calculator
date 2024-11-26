@@ -19,10 +19,10 @@ export default function Home() {
   const hourValue = totalSalary / totalHours;
   const proportionalSalary = hourValue * workedHours;
 
-  // Função para converter HH:MM para decimal
+  // Função para converter HHH:MM para decimal
   const convertToDecimal = (time) => {
-    // Validar formato HH:MM
-    const timeRegex = /^(\d{1,2}):(\d{2})$/;
+    // Validar formato HHH:MM (1 a 3 dígitos de horas)
+    const timeRegex = /^(\d{1,3}):(\d{2})$/;
     const match = time.match(timeRegex);
 
     if (match) {
@@ -37,11 +37,15 @@ export default function Home() {
     }
   };
 
-  // Função auxiliar para converter decimal para HH:MM
-  const convertToHHMM = (decimalTime) => {
+  // Função auxiliar para converter decimal para HHH:MM
+  const convertToHHHMM = (decimalTime) => {
     const hours = Math.floor(decimalTime);
     const minutes = Math.round((decimalTime - hours) * 60);
-    return `${hours}:${minutes.toString().padStart(2, '0')}`;
+    
+    // Garantir que minutos sempre tenham 2 dígitos
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    
+    return `${hours}:${formattedMinutes}`;
   };
 
   return (
@@ -54,7 +58,7 @@ export default function Home() {
         <CardContent>
           <div className="space-y-4">
             <div>
-              <Label>Horas no Formato HH:MM</Label>
+              <Label>Horas no Formato HHH:MM</Label>
               <Input 
                 type="text" 
                 value={hourInput} 
@@ -62,20 +66,20 @@ export default function Home() {
                   setHourInput(e.target.value);
                   convertToDecimal(e.target.value);
                 }}
-                placeholder="Ex: 10:30"
+                placeholder="Ex: 145:30 (até 999:59)"
               />
             </div>
 
             {decimalHours !== null && (
               <div className="bg-gray-100 p-3 rounded">
                 <p>Horas em Decimal: {decimalHours}</p>
-                <p>Conversão original: {convertToHHMM(decimalHours)}</p>
+                <p>Conversão original: {convertToHHHMM(decimalHours)}</p>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
-
+      
       {/* Calculadora de Salário */}
       <Card className="w-full max-w-md">
         <CardHeader>
