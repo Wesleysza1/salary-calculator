@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, Trash2 } from 'lucide-react';
 
 export default function Home() {
   // Estado para Calculadora de Salário
@@ -22,6 +24,10 @@ export default function Home() {
   const [extraHoursInput, setExtraHoursInput] = useState('');
   const [extraHours, setExtraHours] = useState(10);
   const [extraHourPercentage, setExtraHourPercentage] = useState(50);
+
+  // state for multiple days hours calculation
+  const [dayEntries, setDayEntries] = useState([{ id: 1, hours: '' }]);
+  const [totalDaysHours, setTotalDaysHours] = useState(null);
 
   // Função para converter HHH:MM para decimal
   const convertToDecimal = (time) => {
@@ -42,6 +48,44 @@ export default function Home() {
     const hours = Math.floor(decimalTime);
     const minutes = Math.round((decimalTime - hours) * 60);
     return `${hours}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  // Handler for day hours input
+  const handleDayHoursChange = (id, value) => {
+    const updatedEntries = dayEntries.map(entry =>
+      entry.id === id ? { ...entry, hours: value } : entry
+    );
+    setDayEntries(updatedEntries);
+
+    // Calculate total hours
+    const totalDecimalHours = updatedEntries.reduce((total, entry) => {
+      const decimalValue = convertToDecimal(entry.hours);
+      return total + (decimalValue !== null ? decimalValue : 0);
+    }, 0);
+
+    setTotalDaysHours(totalDecimalHours);
+  };
+
+  // Add a new day entry
+  const addDayEntry = () => {
+    const newId = dayEntries.length > 0
+      ? Math.max(...dayEntries.map(entry => entry.id)) + 1
+      : 1;
+    setDayEntries([...dayEntries, { id: newId, hours: '' }]);
+  };
+
+  // Remove a day entry
+  const removeDayEntry = (id) => {
+    const updatedEntries = dayEntries.filter(entry => entry.id !== id);
+    setDayEntries(updatedEntries);
+
+    // Recalculate total hours
+    const totalDecimalHours = updatedEntries.reduce((total, entry) => {
+      const decimalValue = convertToDecimal(entry.hours);
+      return total + (decimalValue !== null ? decimalValue : 0);
+    }, 0);
+
+    setTotalDaysHours(totalDecimalHours);
   };
 
   // Manipulador de mudança para horas trabalhadas
@@ -106,7 +150,7 @@ export default function Home() {
   return (
     <main className="flex flex-col min-h-screen p-4 bg-gray-100">
       <div className="max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Coluna Esquerda */}
           <div className="space-y-6">
             {/* Conversor de Horas */}
@@ -179,15 +223,15 @@ export default function Home() {
                   <div className="bg-gray-100 p-3 rounded">
                     <p>Valor da Hora: R$ {hourValue.toFixed(2)}</p>
                     <p>Salário Proporcional: R$ {proportionalSalary.toFixed(2)}</p>
-                    <p>Horas Trabalhadas (decimal): {workedHours}</p>
+                    {/* <p>Horas Trabalhadas (decimal): {workedHours}</p> */}
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Coluna Direita - Cálculo de Horas Extras */}
-          <div>
+          {/* Coluna Central - Cálculo de Horas Extras */}
+          <div className="space-y-6">
             <Card className="w-full">
               <CardHeader>
                 <CardTitle className="text-center">Cálculo de Horas Extras</CardTitle>
@@ -238,8 +282,57 @@ export default function Home() {
                     <p>Valor Hora Normal: R$ {extraHoursCalculation.normalHourValue}</p>
                     <p>Valor Hora Extra ({extraHourPercentage}%): R$ {extraHoursCalculation.extraHourValue}</p>
                     <p>Valor Total Horas Extras: R$ {extraHoursCalculation.totalExtraValue}</p>
-                    <p>Horas Extras (decimal): {extraHours}</p>
+                    <p>Salário + Horas Extras: R$ {(parseFloat(monthlySalary) + parseFloat(extraHoursCalculation.totalExtraValue)).toFixed(2)}</p>
+                    {/* <p>Horas Extras (decimal): {extraHours}</p> */}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Coluna Esquerda - Cálculo de Horas por Dia */}
+          <div>
+          <Card className="w-full">
+              <CardHeader>
+                <CardTitle className="text-center">Calculadora de Horas por Dias</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {dayEntries.map((entry) => (
+                    <div key={entry.id} className="flex items-center space-x-2">
+                      <div className="flex-grow">
+                        <Label>Dia {entry.id}</Label>
+                        <Input
+                          type="text"
+                          value={entry.hours}
+                          onChange={(e) => handleDayHoursChange(entry.id, e.target.value)}
+                          placeholder="Ex: 8:30 ou 8.5"
+                        />
+                      </div>
+                      {dayEntries.length > 1 && (
+                        <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          onClick={() => removeDayEntry(entry.id)}
+                          className="mt-6"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="flex justify-between items-center">
+                    <Button onClick={addDayEntry} variant="outline">
+                      <Plus className="mr-2 h-4 w-4" /> Adicionar Dia
+                    </Button>
+                  </div>
+
+                  {totalDaysHours !== null && (
+                    <div className="bg-gray-100 p-3 rounded mt-4">
+                      <p>Total de Horas: {convertToHHHMM(totalDaysHours)} ({totalDaysHours.toFixed(2)})</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
