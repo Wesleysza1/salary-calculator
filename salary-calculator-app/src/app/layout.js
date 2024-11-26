@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "Calculadora de Horas",
-  description: "Calculadora de Horas",
+  title: "Calculadora de Salário e Horas",
+  description: "Calculadora de Salário e Horas",
 };
 
 export default function RootLayout({ children }) {

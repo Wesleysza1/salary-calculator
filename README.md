@@ -6,6 +6,8 @@
   </a>
 </p>
 
+> This file is in Portuguese-BR, for an English version follow the link: [English](README.en.md)
+
 > Uma aplicação web intuitiva e eficiente, construída com Next.js e Tailwind CSS e hospedada no Vercel. A ferramenta oferece uma variedade de cálculos relacionados a tempo de trabalho, incluindo conversão de horas para formato decimal, cálculo de salários em jornadas parciais (sem considerar descontos), cálculo de horas extras e total de horas trabalhadas por dia. Ideal para profissionais que buscam agilizar seus cálculos e otimizar a gestão de tempo.
 
 ### 🏠 [Homepage](https://calculadorahoras.vercel.app/)
